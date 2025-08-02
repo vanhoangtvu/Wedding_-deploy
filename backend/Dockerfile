@@ -1,5 +1,5 @@
 # Dockerfile cho Spring Boot Backend
-FROM maven:3.9.4-openjdk-17-slim AS builder
+FROM maven:3.9.5-eclipse-temurin-17-alpine AS builder
 
 # Thiết lập thư mục làm việc
 WORKDIR /app
