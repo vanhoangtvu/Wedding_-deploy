@@ -66,13 +66,13 @@ sudo ufw allow 3307
 
 # 6. Clone repository
 print_status "Clone dự án từ Git..."
-if [ -d "Wedding_-deploy" ]; then
-    print_warning "Thư mục Wedding_-deploy đã tồn tại, đang cập nhật..."
-    cd Wedding_-deploy
+if [ -d "thiep-cuoi-app" ]; then
+    print_warning "Thư mục thiep-cuoi-app đã tồn tại, đang cập nhật..."
+    cd thiep-cuoi-app
     git pull origin main
 else
-    git clone https://github.com/vanhoangtvu/Wedding_-deploy.git
-    cd Wedding_-deploy
+    git clone https://github.com/vanhoangtvu/Wedding_-deploy.git thiep-cuoi-app
+    cd thiep-cuoi-app
 fi
 
 # 7. Tạo file .env với cấu hình mặc định
