@@ -14,7 +14,7 @@ RUN mvn dependency:resolve
 COPY src ./src
 
 # Build ứng dụng
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests spring-boot:repackage
 
 # Stage 2: Runtime
 FROM eclipse-temurin:17-jre-alpine
