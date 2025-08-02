@@ -29,6 +29,28 @@ logs/
 .env.test.local
 .env.production.local
 
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker volumes
+docker-data/
+uploads/
+
+# Sensitive configuration files
+backend/src/main/resources/application-local.properties
+
+# SSH keys
+*.pem
+*.key
+id_rsa*
+
+# Backup files
+*.backup
+*.bak
+backup_*
+
 # Cache
 .cache/
 *.cache

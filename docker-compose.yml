@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  database:
+    image: mysql:8.0
+    container_name: thiep-cuoi-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: ${DB_NAME:-thiep_cuoi_db}
+      MYSQL_USER: ${DB_USER:-thiep_cuoi}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-thiep123}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - thiep-cuoi-network
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Spring Boot Backend
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: thiep-cuoi-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-thiep_cuoi_db}
+      DB_USER: ${DB_USER:-thiep_cuoi}
+      DB_PASSWORD: ${DB_PASSWORD:-thiep123}
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-here}
+      UPLOAD_PATH: /app/uploads
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      - database
+    networks:
+      - thiep-cuoi-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: thiep-cuoi-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    networks:
+      - thiep-cuoi-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mysql_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  thiep-cuoi-network:
+    driver: bridge
